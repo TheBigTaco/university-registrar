@@ -91,5 +91,48 @@ namespace Registrar.Models.Tests
 
       CollectionAssert.AreEqual(testList, result);
     }
+    [TestMethod]
+    public void RemoveCourse_RemoveCourseFromStudent_RemovesCourse()
+    {
+      Course epicodus = new Course("CSharp", "C#");
+      epicodus.Save();
+      Course life = new Course("Adulting for immature adults", "Adt101");
+      life.Save();
+
+      DateTime enrollmentDate = new DateTime(2017,3,26);
+      Student adam = new Student("Adam", enrollmentDate);
+      adam.Save();
+
+      adam.AddCourse(epicodus);
+      adam.AddCourse(life);
+      Student.RemoveCourse(adam.Id, epicodus.Id);
+
+      List<Course> result = adam.GetCourses();
+      List<Course> testList = new List<Course>{life};
+
+      CollectionAssert.AreEqual(result, testList);
+    }
+    [TestMethod]
+    public void Remove_RemoveStudentEntirelyFromEverythingEver_RemovesStudent()
+    {
+      DateTime enrollmentDate = new DateTime(2017,3,26);
+      Student adam = new Student("Adam", enrollmentDate);
+      DateTime enrollmentDate2 = new DateTime(2017,3,14);
+      Student rane = new Student("Rane", enrollmentDate2);
+      adam.Save();
+      rane.Save();
+      Course epicodus = new Course("CSharp", "C#");
+      epicodus.Save();
+      epicodus.AddStudent(adam);
+      epicodus.AddStudent(rane);
+
+      Student.Remove(adam.Id);
+      List<Student> result1 = Student.GetAll();
+      List<Student> result2 = epicodus.GetStudents();
+      List<Student> testList = new List<Student> {rane};
+
+      CollectionAssert.AreEqual(result1, testList);
+      CollectionAssert.AreEqual(result2, testList);
+    }
   }
 }

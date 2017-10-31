@@ -89,5 +89,26 @@ namespace Registrar.Models.Tests
 
       CollectionAssert.AreEqual(testList, result);
     }
+    [TestMethod]
+    public void Remove_RemoveStudentEntirelyFromEverythingEver_RemovesStudent()
+    {
+      DateTime enrollmentDate = new DateTime(2017,3,26);
+      Student adam = new Student("Adam", enrollmentDate);
+      adam.Save();
+      Course epicodus = new Course("CSharp", "C#");
+      epicodus.Save();
+      Course life = new Course("Adulting for immature adults", "Adt101");
+      life.Save();
+      adam.AddCourse(epicodus);
+      adam.AddCourse(life);
+
+      Course.Remove(life.Id);
+      List<Course> result1 = Course.GetAll();
+      List<Course> result2 = adam.GetCourses();
+      List<Course> testList = new List<Course> {epicodus};
+
+      CollectionAssert.AreEqual(result1, testList);
+      CollectionAssert.AreEqual(result2, testList);
+    }
   }
 }
