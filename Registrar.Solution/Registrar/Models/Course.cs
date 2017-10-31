@@ -126,7 +126,6 @@ namespace Registrar.Models
         conn.Dispose();
       }
     }
-    // RemoveStudent
     public List<Student> GetStudents()
     {
       MySqlConnection conn = DB.Connection();

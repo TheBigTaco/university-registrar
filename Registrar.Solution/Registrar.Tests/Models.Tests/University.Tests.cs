@@ -116,5 +116,50 @@ namespace Registrar.Models.Tests
 
       CollectionAssert.AreEqual(testList, result);
     }
+    [TestMethod]
+    public void RemoveStudentFromCourse_RemoveStudentFromCourseAndViceVersa_Remove()
+    {
+      Course epicodus = new Course("CSharp", "C#");
+      epicodus.Save();
+      Student adam = new Student("Adam", new DateTime(2017,3,26));
+      adam.Save();
+      University.AddStudentToCourse(adam, epicodus);
+      University.RemoveStudentFromCourse(adam.Id, epicodus.Id);
+
+      List<Course> result = adam.GetCourses();
+      List<Course> testList = new List<Course>{};
+
+      CollectionAssert.AreEqual(result, testList);
+    }
+    [TestMethod]
+    public void RemoveCourseFromDepartment_RemoveCourseFromDepartmentAndViceVersa_Remove()
+    {
+      Course epicodus = new Course("CSharp", "C#");
+      epicodus.Save();
+      Department code = new Department("Code");
+      code.Save();
+      University.AddCourseToDepartment(epicodus, code);
+      University.RemoveCourseFromDepartment(epicodus.Id, code.Id);
+
+      List<Course> result = code.GetCourses();
+      List<Course> testList = new List<Course>{};
+
+      CollectionAssert.AreEqual(result, testList);
+    }
+    [TestMethod]
+    public void RemoveStudentFromDepartment_RemoveStudentFromDepartmentAndViceVersa_Remove()
+    {
+      Student adam = new Student("Adam", new DateTime(2017,3,26));
+      adam.Save();
+      Department code = new Department("C0de");
+      code.Save();
+      University.AddStudentToDepartment(adam, code);
+      University.RemoveStudentFromDepartment(adam.Id, code.Id);
+
+      List<Student> result = code.GetStudents();
+      List<Student> testList = new List<Student>{};
+
+      CollectionAssert.AreEqual(result, testList);
+    }
   }
 }

@@ -74,27 +74,6 @@ namespace Registrar.Models.Tests
       CollectionAssert.AreEqual(testList, result);
     }
     [TestMethod]
-    public void RemoveCourse_RemoveCourseFromStudent_RemovesCourse()
-    {
-      Course epicodus = new Course("CSharp", "C#");
-      epicodus.Save();
-      Course life = new Course("Adulting for immature adults", "Adt101");
-      life.Save();
-
-      DateTime enrollmentDate = new DateTime(2017,3,26);
-      Student adam = new Student("Adam", enrollmentDate);
-      adam.Save();
-
-      University.AddStudentToCourse(adam, epicodus);
-      University.AddStudentToCourse(adam, life);
-      Student.RemoveCourse(adam.Id, epicodus.Id);
-
-      List<Course> result = adam.GetCourses();
-      List<Course> testList = new List<Course>{life};
-
-      CollectionAssert.AreEqual(result, testList);
-    }
-    [TestMethod]
     public void Update_UpdatesStudentInfo_InfoUpdated()
     {
       DateTime enrollmentDate = new DateTime(2017,3,26);
