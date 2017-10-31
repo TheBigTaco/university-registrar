@@ -72,6 +72,25 @@ namespace Registrar.Models.Tests
       CollectionAssert.AreEqual(testList, result);
     }
     [TestMethod]
+    public void GetDepartments_GetsDepartmentsOfCourse_DepartmentList()
+    {
+      Course epicodus = new Course("CSharp", "C#");
+      epicodus.Save();
+
+      Department code = new Department("Code");
+      Department cod = new Department("Cod");
+      code.Save();
+      cod.Save();
+
+      University.AddCourseToDepartment(epicodus, code);
+      University.AddCourseToDepartment(epicodus, cod);
+
+      List<Department> result = epicodus.GetDepartments();
+      List<Department> testList = new List<Department>{code, cod};
+
+      CollectionAssert.AreEqual(testList, result);
+    }
+    [TestMethod]
     public void Update_UpdatesCourseInfo_InfoUpdated()
     {
       Course epicodus = new Course("CSharp", "C#");

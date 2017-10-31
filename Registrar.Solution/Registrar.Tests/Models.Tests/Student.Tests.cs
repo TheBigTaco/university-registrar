@@ -74,6 +74,25 @@ namespace Registrar.Models.Tests
       CollectionAssert.AreEqual(testList, result);
     }
     [TestMethod]
+    public void GetDepartments_GetsDepartmentsOfStudent_DepartmentList()
+    {
+      Department code = new Department("Code");
+      Department cod = new Department("Cod");
+      code.Save();
+      cod.Save();
+
+      Student adam = new Student("Adam", new DateTime(2017,3,26));
+      adam.Save();
+
+      University.AddStudentToDepartment(adam, code);
+      University.AddStudentToDepartment(adam, cod);
+
+      List<Department> result = adam.GetDepartments();
+      List<Department> testList = new List<Department>{code, cod};
+
+      CollectionAssert.AreEqual(testList, result);
+    }
+    [TestMethod]
     public void Update_UpdatesStudentInfo_InfoUpdated()
     {
       DateTime enrollmentDate = new DateTime(2017,3,26);

@@ -153,5 +153,30 @@ namespace Registrar.Models
       }
       return allCoursesInStudent;
     }
+    public List<Department> GetDepartments()
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT departments.* FROM departments JOIN students_departments ON (departments.id = students_departments.department_id) JOIN students ON (students_departments.student_id = students.id) WHERE students.id = @studentId;";
+
+      cmd.Parameters.Add(new MySqlParameter("@studentId", Id));
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      List<Department> allDepartmentsInStudent = new List<Department>{};
+
+      while(rdr.Read())
+      {
+        int departmentId = rdr.GetInt32(0);
+        string departmentName = rdr.GetString(1);
+        Department newDepartment = new Department(departmentName, departmentId);
+        allDepartmentsInStudent.Add(newDepartment);
+      }
+      conn.Close();
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+      return allDepartmentsInStudent;
+    }
   }
 }
