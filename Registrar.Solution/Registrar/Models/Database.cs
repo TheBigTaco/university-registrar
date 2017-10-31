@@ -1,8 +1,8 @@
 using System;
 using MySql.Data.MySqlClient;
-using Rename;
+using Registrar;
 
-namespace Rename.Models
+namespace Registrar.Models
 {
   public class DB
   {

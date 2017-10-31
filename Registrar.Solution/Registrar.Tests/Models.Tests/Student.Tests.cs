@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rename.Models;
+using Registrar.Models;
 
-namespace Rename.Models.Tests
+namespace Registrar.Models.Tests
 {
   [TestClass]
-  public class _classTests : IDisposable
+  public class StudentTests : IDisposable
   {
     public void Dispose()
     {
-      _class.ClearAll
+      Student.ClearAll
     }
     [TestMethod]
     public void Method_Description_ExpectedValue()

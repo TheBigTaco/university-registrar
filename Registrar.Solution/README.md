@@ -1,4 +1,4 @@
-# Rename
+# Registrar
 ##### by Adam Titus
 
 ### Description

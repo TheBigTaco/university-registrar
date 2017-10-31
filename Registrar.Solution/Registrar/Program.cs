@@ -1,7 +1,7 @@
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Rename
+namespace Registrar
 {
   public class Program
   {

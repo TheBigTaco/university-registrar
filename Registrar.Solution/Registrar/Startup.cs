@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Rename
+namespace Registrar
 {
   public static class DBConfiguration
     {
-      public static string ConnectionString = "server=localhost;user id=root;password=root;port=8889;database=_database;";
+      public static string ConnectionString = "server=localhost;user id=root;password=root;port=8889;database=university_registrar;";
     }
   public class Startup
   {

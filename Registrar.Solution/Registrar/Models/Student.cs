@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
 
-namespace Rename.Models
+namespace Registrar.Models
 {
-  public class _class
+  public class Student
   {
     public static void ClearAll()
       {
@@ -13,7 +13,7 @@ namespace Rename.Models
         conn.Open();
 
         var cmd = conn.CreateCommand() as MySqlCommand;
-        cmd.CommandText = @"DELETE FROM _table;";
+        cmd.CommandText = @"DELETE FROM students;";
         cmd.ExecuteNonQuery();
 
         conn.Close();
