@@ -54,5 +54,42 @@ namespace Registrar.Models.Tests
 
       Assert.AreEqual(adam, Student.Find(adam.Id));
     }
+    [TestMethod]
+    public void AddCourse_AddsCourseToStudent_CourseList()
+    {
+      Course epicodus = new Course("CSharp", "C#");
+      epicodus.Save();
+
+      DateTime enrollmentDate = new DateTime(2017,3,26);
+      Student adam = new Student("Adam", enrollmentDate);
+      adam.Save();
+
+      adam.AddCourse(epicodus);
+
+      List<Course> result = adam.GetCourses();
+      List<Course> testList = new List<Course>{epicodus};
+
+      CollectionAssert.AreEqual(testList, result);
+    }
+    [TestMethod]
+    public void GetCourses_GetsCoursesFromStudent_CourseList()
+    {
+      Course epicodus = new Course("CSharp", "C#");
+      epicodus.Save();
+      Course life = new Course("Adulting for immature adults", "Adt101");
+      life.Save();
+
+      DateTime enrollmentDate = new DateTime(2017,3,26);
+      Student adam = new Student("Adam", enrollmentDate);
+      adam.Save();
+
+      adam.AddCourse(epicodus);
+      adam.AddCourse(life);
+
+      List<Course> result = adam.GetCourses();
+      List<Course> testList = new List<Course>{epicodus, life};
+
+      CollectionAssert.AreEqual(testList, result);
+    }
   }
 }
