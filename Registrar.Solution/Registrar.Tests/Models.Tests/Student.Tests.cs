@@ -11,8 +11,8 @@ namespace Registrar.Models.Tests
   {
     public void Dispose()
     {
-      Student.ClearAll();
       Course.ClearAll();
+      Student.ClearAll();
     }
     public StudentTests()
     {

@@ -11,8 +11,8 @@ namespace Registrar.Models.Tests
   {
     public void Dispose()
     {
-      Student.ClearAll();
       Course.ClearAll();
+      Student.ClearAll();
     }
     public CourseTests()
     {
@@ -50,6 +50,44 @@ namespace Registrar.Models.Tests
       epicodus.Save();
 
       Assert.AreEqual(epicodus, Course.Find(epicodus.Id));
+    }
+    [TestMethod]
+    public void AddStudent_AddsStudentToCourse_StudentList()
+    {
+      Course epicodus = new Course("CSharp", "C#");
+      epicodus.Save();
+
+      DateTime enrollmentDate = new DateTime(2017,3,26);
+      Student adam = new Student("Adam", enrollmentDate);
+      adam.Save();
+
+      epicodus.AddStudent(adam);
+
+      List<Student> result = epicodus.GetStudents();
+      List<Student> testList = new List<Student>{adam};
+
+      CollectionAssert.AreEqual(testList, result);
+    }
+    [TestMethod]
+    public void GetStudents_GetsStudentsFromCourse_StudentList()
+    {
+      Course epicodus = new Course("CSharp", "C#");
+      epicodus.Save();
+
+      DateTime enrollmentDate = new DateTime(2017,3,26);
+      Student adam = new Student("Adam", enrollmentDate);
+      DateTime enrollmentDate2 = new DateTime(2017,3,14);
+      Student rane = new Student("Rane", enrollmentDate2);
+      adam.Save();
+      rane.Save();
+
+      epicodus.AddStudent(adam);
+      epicodus.AddStudent(rane);
+
+      List<Student> result = epicodus.GetStudents();
+      List<Student> testList = new List<Student>{adam, rane};
+
+      CollectionAssert.AreEqual(testList, result);
     }
   }
 }
