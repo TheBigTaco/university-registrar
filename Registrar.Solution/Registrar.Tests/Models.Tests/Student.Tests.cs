@@ -11,6 +11,7 @@ namespace Registrar.Models.Tests
   {
     public void Dispose()
     {
+      Department.ClearAll();
       Course.ClearAll();
       Student.ClearAll();
     }
@@ -133,6 +134,20 @@ namespace Registrar.Models.Tests
 
       CollectionAssert.AreEqual(result1, testList);
       CollectionAssert.AreEqual(result2, testList);
+    }
+    [TestMethod]
+    public void Update_UpdatesStudentInfo_InfoUpdated()
+    {
+      DateTime enrollmentDate = new DateTime(2017,3,26);
+      Student adam = new Student("Adam", enrollmentDate);
+      adam.Save();
+      DateTime enrollmentDate2 = new DateTime(2017,3,14);
+      Student.Update(adam.Id, "Rane", enrollmentDate2);
+
+      Student result = Student.Find(adam.Id);
+      Student test = new Student("Rane", enrollmentDate2);
+
+      Assert.AreEqual(test, result);
     }
   }
 }

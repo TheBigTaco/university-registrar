@@ -81,6 +81,24 @@ namespace Registrar.Models
         conn.Dispose();
       }
     }
+
+    public static void Update(int id, string newName, string newNumber)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"UPDATE courses SET name = @NewName, number = @NewNumber WHERE id = @Id;";
+      cmd.Parameters.Add(new MySqlParameter("@NewName", newName));
+      cmd.Parameters.Add(new MySqlParameter("@NewNumber", newNumber));
+      cmd.Parameters.Add(new MySqlParameter("@Id", id));
+      cmd.ExecuteNonQuery();
+      conn.Close();
+      if(conn != null)
+      {
+        conn.Dispose();
+      }
+    }
+
     public static Course Find(int id)
     {
       MySqlConnection conn = DB.Connection();

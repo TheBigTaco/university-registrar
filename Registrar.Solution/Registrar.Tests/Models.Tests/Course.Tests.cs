@@ -11,6 +11,7 @@ namespace Registrar.Models.Tests
   {
     public void Dispose()
     {
+      Department.ClearAll();
       Course.ClearAll();
       Student.ClearAll();
     }
@@ -109,6 +110,18 @@ namespace Registrar.Models.Tests
 
       CollectionAssert.AreEqual(result1, testList);
       CollectionAssert.AreEqual(result2, testList);
+    }
+    [TestMethod]
+    public void Update_UpdatesCourseInfo_InfoUpdated()
+    {
+      Course epicodus = new Course("CSharp", "C#");
+      epicodus.Save();
+      Course.Update(epicodus.Id, "Adulting for immature adults", "Adt101");
+
+      Course result = Course.Find(epicodus.Id);
+      Course test = new Course("Adulting for immature adults", "Adt101");
+
+      Assert.AreEqual(test, result);
     }
   }
 }
