@@ -5,31 +5,31 @@ using MySql.Data.MySqlClient;
 
 namespace Registrar.Models
 {
-  public class Student
+  public class Course
   {
-    public int Id{get; private set;}
+    public int Id{get;private set;}
     public string Name{get;}
-    public DateTime EnrollmentDate{get;}
+    public string Number{get;}
 
-    public Student(string name, DateTime enrollmentDate, int id = 0)
+    public Course(string name, string number, int id = 0)
     {
       Name = name;
-      EnrollmentDate = enrollmentDate;
+      Number = number;
       Id = id;
     }
 
-    public override bool Equals(object otherStudent)
+    public override bool Equals(object otherCourse)
     {
-      if(!(otherStudent is Student))
+      if(!(otherCourse is Course))
       {
         return false;
       }
       else
       {
-        Student newStudent = (Student) otherStudent;
-        bool nameEquality = this.Name.Equals(newStudent.Name);
-        bool enrollEquality = this.EnrollmentDate.Equals(newStudent.EnrollmentDate);
-        return(nameEquality && enrollEquality);
+        Course newCourse = (Course) otherCourse;
+        bool nameEquality = this.Name.Equals(newCourse.Name);
+        bool numberEquality = this.Number.Equals(newCourse.Number);
+        return(nameEquality && numberEquality);
       }
     }
 
@@ -38,28 +38,28 @@ namespace Registrar.Models
       return this.Name.GetHashCode();
     }
 
-    public static List<Student> GetAll()
+    public static List<Course> GetAll()
     {
-      List<Student> allStudents = new List<Student> {};
+      List<Course> allCourses = new List<Course> {};
       MySqlConnection conn = DB.Connection();
       conn.Open();
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"SELECT * FROM students;";
+      cmd.CommandText = @"SELECT * FROM courses;";
       var rdr = cmd.ExecuteReader() as MySqlDataReader;
       while(rdr.Read())
       {
-        int studentId = rdr.GetInt32(0);
-        string studentName = rdr.GetString(1);
-        DateTime studentDate = rdr.GetDateTime(2);
-        Student newStudent = new Student(studentName, studentDate, studentId);
-        allStudents.Add(newStudent);
+        int courseId = rdr.GetInt32(0);
+        string courseName = rdr.GetString(1);
+        string courseNumber = rdr.GetString(2);
+        Course newCourse = new Course(courseName, courseNumber, courseId);
+        allCourses.Add(newCourse);
       }
       conn.Close();
       if(conn != null)
       {
         conn.Dispose();
       }
-      return allStudents;
+      return allCourses;
     }
 
     public void Save()
@@ -68,10 +68,10 @@ namespace Registrar.Models
      conn.Open();
 
      var cmd = conn.CreateCommand() as MySqlCommand;
-     cmd.CommandText = @"INSERT INTO students (name, enrollment_date) VALUES (@name, @enrollmentDate)";
+     cmd.CommandText = @"INSERT INTO courses (name, number) VALUES (@name, @number)";
 
       cmd.Parameters.Add(new MySqlParameter("@name", this.Name));
-      cmd.Parameters.Add(new MySqlParameter("@enrollmentDate", this.EnrollmentDate.ToString("yyyy-MM-dd")));
+      cmd.Parameters.Add(new MySqlParameter("@number", this.Number));
 
       cmd.ExecuteNonQuery();
       Id = (int)cmd.LastInsertedId;
@@ -81,34 +81,33 @@ namespace Registrar.Models
         conn.Dispose();
       }
     }
-
-    public static Student Find(int id)
+    public static Course Find(int id)
     {
       MySqlConnection conn = DB.Connection();
       conn.Open();
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText =@"SELECT * FROM students WHERE id = (@searchId);";
+      cmd.CommandText =@"SELECT * FROM courses WHERE id = (@searchId);";
 
       cmd.Parameters.Add(new MySqlParameter("@searchId", id));
 
       var rdr = cmd.ExecuteReader() as MySqlDataReader;
-      int studentId = 0;
-      string studentName = "";
-      DateTime studentDate = new DateTime();;
+      int courseId = 0;
+      string courseName = "";
+      string courseNumber = "";
 
       while(rdr.Read())
       {
-        studentId = rdr.GetInt32(0);
-        studentName = rdr.GetString(1);
-        studentDate = rdr.GetDateTime(2);
+        courseId = rdr.GetInt32(0);
+        courseName = rdr.GetString(1);
+        courseNumber = rdr.GetString(2);
       }
-      Student newStudent = new Student(studentName, studentDate, studentId);
+      Course newCourse = new Course(courseName, courseNumber, courseId);
       conn.Close();
       if(conn != null)
       {
         conn.Dispose();
       }
-      return newStudent;
+      return newCourse;
     }
 
     public static void ClearAll()
@@ -117,7 +116,7 @@ namespace Registrar.Models
       conn.Open();
 
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"DELETE FROM students;";
+      cmd.CommandText = @"DELETE FROM courses;";
       cmd.ExecuteNonQuery();
 
       conn.Close();

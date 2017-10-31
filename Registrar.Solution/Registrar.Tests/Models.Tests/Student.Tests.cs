@@ -12,10 +12,11 @@ namespace Registrar.Models.Tests
     public void Dispose()
     {
       Student.ClearAll();
+      Course.ClearAll();
     }
     public StudentTests()
     {
-      DBConfiguration.ConnectionString = "server=localhost;user id=root;password=root;port=8889;database=university_registrar;";
+      DBConfiguration.ConnectionString = "server=localhost;user id=root;password=root;port=8889;database=university_registrar_tests;";
     }
     [TestMethod]
     public void Equals_EqualsOverrideSuccessful_True()
