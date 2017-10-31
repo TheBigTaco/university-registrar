@@ -11,12 +11,38 @@ namespace Registrar.Models.Tests
   {
     public void Dispose()
     {
-      Student.ClearAll
+      Student.ClearAll();
+    }
+    public StudentTests()
+    {
+      DBConfiguration.ConnectionString = "server=localhost;user id=root;password=root;port=8889;database=university_registrar;";
     }
     [TestMethod]
-    public void Method_Description_ExpectedValue()
+    public void Equals_EqualsOverrideSuccessful_True()
     {
-      Assert.AreEqual(var1, method(input));
+      DateTime enrollmentDate = new DateTime(2017,3,26);
+      Student adam = new Student("Adam", enrollmentDate);
+      Student adamT = new Student("Adam", enrollmentDate);
+      Assert.AreEqual(adam, adamT);
+    }
+    [TestMethod]
+    public void GetAll_CheckDatabaseEmpty_0()
+    {
+      int result = Student.GetAll().Count;
+
+      Assert.AreEqual(0, result);
+    }
+    [TestMethod]
+    public void Save_SaveStudentToDatabase_StudentList()
+    {
+      DateTime enrollmentDate = new DateTime(2017,3,26);
+      Student adam = new Student("Adam", enrollmentDate);
+      adam.Save();
+
+      List<Student> result = Student.GetAll();
+      List<Student> testList = new List<Student>{adam};
+
+      CollectionAssert.AreEqual(testList, result);
     }
   }
 }
