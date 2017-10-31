@@ -82,6 +82,35 @@ namespace Registrar.Models
       }
     }
 
+    public static Student Find(int id)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText =@"SELECT * FROM students WHERE id = (@searchId);";
+
+      cmd.Parameters.Add(new MySqlParameter("@searchId", id));
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      int studentId = 0;
+      string studentName = "";
+      DateTime studentDate = new DateTime();;
+
+      while(rdr.Read())
+      {
+        studentId = rdr.GetInt32(0);
+        studentName = rdr.GetString(1);
+        studentDate = rdr.GetDateTime(2);
+      }
+      Student newStudent = new Student(studentName, studentDate, studentId);
+      conn.Close();
+      if(conn != null)
+      {
+        conn.Dispose();
+      }
+      return newStudent;
+    }
+
     public static void ClearAll()
       {
         MySqlConnection conn = DB.Connection();

@@ -44,5 +44,14 @@ namespace Registrar.Models.Tests
 
       CollectionAssert.AreEqual(testList, result);
     }
+    [TestMethod]
+    public void Find_FindsStudentInDatabase_Student()
+    {
+      DateTime enrollmentDate = new DateTime(2017,3,26);
+      Student adam = new Student("Adam", enrollmentDate);
+      adam.Save();
+
+      Assert.AreEqual(adam, Student.Find(adam.Id));
+    }
   }
 }
