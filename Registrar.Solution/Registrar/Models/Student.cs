@@ -7,9 +7,9 @@ namespace Registrar.Models
 {
   public class Student
   {
-    public int Id{get; private set;}
-    public string Name{get;}
-    public DateTime EnrollmentDate{get;}
+    public int Id {get; private set;}
+    public string Name {get;}
+    public DateTime EnrollmentDate {get;}
 
     public Student(string name, DateTime enrollmentDate, int id = 0)
     {
@@ -32,10 +32,29 @@ namespace Registrar.Models
         return(nameEquality && enrollEquality);
       }
     }
-
     public override int GetHashCode()
     {
       return this.Name.GetHashCode();
+    }
+
+    public void Save()
+    {
+      MySqlConnection conn = DB.Connection();
+     conn.Open();
+
+     var cmd = conn.CreateCommand() as MySqlCommand;
+     cmd.CommandText = @"INSERT INTO students (name, enrollment_date) VALUES (@name, @enrollmentDate)";
+
+      cmd.Parameters.Add(new MySqlParameter("@name", this.Name));
+      cmd.Parameters.Add(new MySqlParameter("@enrollmentDate", this.EnrollmentDate.ToString("yyyy-MM-dd")));
+
+      cmd.ExecuteNonQuery();
+      Id = (int)cmd.LastInsertedId;
+      conn.Close();
+      if(conn != null)
+      {
+        conn.Dispose();
+      }
     }
 
     public static List<Student> GetAll()
@@ -60,26 +79,6 @@ namespace Registrar.Models
         conn.Dispose();
       }
       return allStudents;
-    }
-
-    public void Save()
-    {
-      MySqlConnection conn = DB.Connection();
-     conn.Open();
-
-     var cmd = conn.CreateCommand() as MySqlCommand;
-     cmd.CommandText = @"INSERT INTO students (name, enrollment_date) VALUES (@name, @enrollmentDate)";
-
-      cmd.Parameters.Add(new MySqlParameter("@name", this.Name));
-      cmd.Parameters.Add(new MySqlParameter("@enrollmentDate", this.EnrollmentDate.ToString("yyyy-MM-dd")));
-
-      cmd.ExecuteNonQuery();
-      Id = (int)cmd.LastInsertedId;
-      conn.Close();
-      if(conn != null)
-      {
-        conn.Dispose();
-      }
     }
 
     public static Student Find(int id)
@@ -127,25 +126,6 @@ namespace Registrar.Models
         conn.Dispose();
       }
     }
-
-    public void AddCourse(Course newCourse)
-    {
-      MySqlConnection conn = DB.Connection();
-      conn.Open();
-      var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"INSERT INTO students_courses (course_id, student_id) VALUES (@courseId, @studentId);";
-
-      cmd.Parameters.Add(new MySqlParameter("@courseId", newCourse.Id));
-      cmd.Parameters.Add(new MySqlParameter("@studentId", Id));
-
-      cmd.ExecuteNonQuery();
-      conn.Close();
-      if (conn != null)
-      {
-        conn.Dispose();
-      }
-    }
-
     public static void RemoveCourse(int studentId, int courseId)
     {
       MySqlConnection conn = DB.Connection();
@@ -155,23 +135,6 @@ namespace Registrar.Models
       cmd.CommandText = @"DELETE FROM students_courses WHERE student_id = @StudentId AND course_id = @CourseId;";
       cmd.Parameters.Add(new MySqlParameter("@StudentId", studentId));
       cmd.Parameters.Add(new MySqlParameter("@CourseId", courseId));
-      cmd.ExecuteNonQuery();
-
-      conn.Close();
-      if (conn != null)
-      {
-        conn.Dispose();
-      }
-    }
-
-    public static void Remove(int id)
-    {
-      MySqlConnection conn = DB.Connection();
-      conn.Open();
-
-      var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"DELETE FROM students_courses WHERE student_id = @StudentId; DELETE FROM students WHERE id = @StudentId;";
-      cmd.Parameters.Add(new MySqlParameter("@StudentId", id));
       cmd.ExecuteNonQuery();
 
       conn.Close();
@@ -206,22 +169,6 @@ namespace Registrar.Models
         conn.Dispose();
       }
       return allCoursesInStudent;
-    }
-
-    public static void ClearAll()
-    {
-      MySqlConnection conn = DB.Connection();
-      conn.Open();
-
-      var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"DELETE FROM students;";
-      cmd.ExecuteNonQuery();
-
-      conn.Close();
-      if (conn != null)
-      {
-        conn.Dispose();
-      }
     }
   }
 }

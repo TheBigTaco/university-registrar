@@ -11,9 +11,7 @@ namespace Registrar.Models.Tests
   {
     public void Dispose()
     {
-      Department.ClearAll();
-      Course.ClearAll();
-      Student.ClearAll();
+      University.ClearAllData();
     }
     public DepartmentTests()
     {
@@ -53,23 +51,6 @@ namespace Registrar.Models.Tests
       Assert.AreEqual(code, Department.Find(code.Id));
     }
     [TestMethod]
-    public void AddCourse_AddsCourseToDepartment_CourseList()
-    {
-      Department code = new Department("Code");
-      code.Save();
-
-
-      Course epicodus = new Course("CSharp", "C#");
-      epicodus.Save();
-
-      code.AddCourse(epicodus);
-
-      List<Course> result = code.GetCourses();
-      List<Course> testList = new List<Course>{epicodus};
-
-      CollectionAssert.AreEqual(testList, result);
-    }
-    [TestMethod]
     public void GetCourses_GetsCoursesFromDepartment_CourseList()
     {
       Department code = new Department("Code");
@@ -79,8 +60,8 @@ namespace Registrar.Models.Tests
       Course life = new Course("Adulting for immature adults", "Adt101");
       life.Save();
       epicodus.Save();
-      code.AddCourse(epicodus);
-      code.AddCourse(life);
+      University.AddCourseToDepartment(epicodus, code);
+      University.AddCourseToDepartment(life, code);
 
       List<Course> result = code.GetCourses();
       List<Course> testList = new List<Course>{life, epicodus};
@@ -88,17 +69,23 @@ namespace Registrar.Models.Tests
       CollectionAssert.AreEqual(testList, result);
     }
     [TestMethod]
-    public void Remove_RemoveDepartmentEntirelyFromEverythingEver_RemovesDepartment()
+    public void GetStudents_GetsStudentsFromDepartment_StudentList()
     {
-
       Department code = new Department("Code");
       code.Save();
-      Department.Remove(code.Id);
 
-      List<Department> result = Department.GetAll();
-      List<Department> testList = new List<Department> {};
+      Student adam = new Student("Adam", new DateTime(2017,3,26));
+      adam.Save();
+      Student rane = new Student("Adam", new DateTime(2016,3,26));
+      rane.Save();
 
-      CollectionAssert.AreEqual(result, testList);
+      University.AddStudentToDepartment(adam, code);
+      University.AddStudentToDepartment(rane, code);
+
+      List<Student> result = code.GetStudents();
+      List<Student> testList = new List<Student>{adam, rane};
+
+      CollectionAssert.AreEqual(testList, result);
     }
     [TestMethod]
     public void Update_UpdatesDepartmentInfo_InfoUpdated()

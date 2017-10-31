@@ -11,9 +11,7 @@ namespace Registrar.Models.Tests
   {
     public void Dispose()
     {
-      Department.ClearAll();
-      Course.ClearAll();
-      Student.ClearAll();
+      University.ClearAllData();
     }
     public StudentTests()
     {
@@ -56,23 +54,6 @@ namespace Registrar.Models.Tests
       Assert.AreEqual(adam, Student.Find(adam.Id));
     }
     [TestMethod]
-    public void AddCourse_AddsCourseToStudent_CourseList()
-    {
-      Course epicodus = new Course("CSharp", "C#");
-      epicodus.Save();
-
-      DateTime enrollmentDate = new DateTime(2017,3,26);
-      Student adam = new Student("Adam", enrollmentDate);
-      adam.Save();
-
-      adam.AddCourse(epicodus);
-
-      List<Course> result = adam.GetCourses();
-      List<Course> testList = new List<Course>{epicodus};
-
-      CollectionAssert.AreEqual(testList, result);
-    }
-    [TestMethod]
     public void GetCourses_GetsCoursesFromStudent_CourseList()
     {
       Course epicodus = new Course("CSharp", "C#");
@@ -84,8 +65,8 @@ namespace Registrar.Models.Tests
       Student adam = new Student("Adam", enrollmentDate);
       adam.Save();
 
-      adam.AddCourse(epicodus);
-      adam.AddCourse(life);
+      University.AddStudentToCourse(adam, epicodus);
+      University.AddStudentToCourse(adam, life);
 
       List<Course> result = adam.GetCourses();
       List<Course> testList = new List<Course>{epicodus, life};
@@ -104,36 +85,14 @@ namespace Registrar.Models.Tests
       Student adam = new Student("Adam", enrollmentDate);
       adam.Save();
 
-      adam.AddCourse(epicodus);
-      adam.AddCourse(life);
+      University.AddStudentToCourse(adam, epicodus);
+      University.AddStudentToCourse(adam, life);
       Student.RemoveCourse(adam.Id, epicodus.Id);
 
       List<Course> result = adam.GetCourses();
       List<Course> testList = new List<Course>{life};
 
       CollectionAssert.AreEqual(result, testList);
-    }
-    [TestMethod]
-    public void Remove_RemoveStudentEntirelyFromEverythingEver_RemovesStudent()
-    {
-      DateTime enrollmentDate = new DateTime(2017,3,26);
-      Student adam = new Student("Adam", enrollmentDate);
-      DateTime enrollmentDate2 = new DateTime(2017,3,14);
-      Student rane = new Student("Rane", enrollmentDate2);
-      adam.Save();
-      rane.Save();
-      Course epicodus = new Course("CSharp", "C#");
-      epicodus.Save();
-      epicodus.AddStudent(adam);
-      epicodus.AddStudent(rane);
-
-      Student.Remove(adam.Id);
-      List<Student> result1 = Student.GetAll();
-      List<Student> result2 = epicodus.GetStudents();
-      List<Student> testList = new List<Student> {rane};
-
-      CollectionAssert.AreEqual(result1, testList);
-      CollectionAssert.AreEqual(result2, testList);
     }
     [TestMethod]
     public void Update_UpdatesStudentInfo_InfoUpdated()

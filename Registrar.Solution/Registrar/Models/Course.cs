@@ -7,9 +7,9 @@ namespace Registrar.Models
 {
   public class Course
   {
-    public int Id{get;private set;}
-    public string Name{get;}
-    public string Number{get;}
+    public int Id {get;private set;}
+    public string Name {get;}
+    public string Number {get;}
 
     public Course(string name, string number, int id = 0)
     {
@@ -32,10 +32,29 @@ namespace Registrar.Models
         return(nameEquality && numberEquality);
       }
     }
-
     public override int GetHashCode()
     {
       return this.Name.GetHashCode();
+    }
+
+    public void Save()
+    {
+      MySqlConnection conn = DB.Connection();
+     conn.Open();
+
+     var cmd = conn.CreateCommand() as MySqlCommand;
+     cmd.CommandText = @"INSERT INTO courses (name, number) VALUES (@name, @number)";
+
+      cmd.Parameters.Add(new MySqlParameter("@name", this.Name));
+      cmd.Parameters.Add(new MySqlParameter("@number", this.Number));
+
+      cmd.ExecuteNonQuery();
+      Id = (int)cmd.LastInsertedId;
+      conn.Close();
+      if(conn != null)
+      {
+        conn.Dispose();
+      }
     }
 
     public static List<Course> GetAll()
@@ -60,43 +79,6 @@ namespace Registrar.Models
         conn.Dispose();
       }
       return allCourses;
-    }
-
-    public void Save()
-    {
-      MySqlConnection conn = DB.Connection();
-     conn.Open();
-
-     var cmd = conn.CreateCommand() as MySqlCommand;
-     cmd.CommandText = @"INSERT INTO courses (name, number) VALUES (@name, @number)";
-
-      cmd.Parameters.Add(new MySqlParameter("@name", this.Name));
-      cmd.Parameters.Add(new MySqlParameter("@number", this.Number));
-
-      cmd.ExecuteNonQuery();
-      Id = (int)cmd.LastInsertedId;
-      conn.Close();
-      if(conn != null)
-      {
-        conn.Dispose();
-      }
-    }
-
-    public static void Update(int id, string newName, string newNumber)
-    {
-      MySqlConnection conn = DB.Connection();
-      conn.Open();
-      var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"UPDATE courses SET name = @NewName, number = @NewNumber WHERE id = @Id;";
-      cmd.Parameters.Add(new MySqlParameter("@NewName", newName));
-      cmd.Parameters.Add(new MySqlParameter("@NewNumber", newNumber));
-      cmd.Parameters.Add(new MySqlParameter("@Id", id));
-      cmd.ExecuteNonQuery();
-      conn.Close();
-      if(conn != null)
-      {
-        conn.Dispose();
-      }
     }
 
     public static Course Find(int id)
@@ -128,24 +110,23 @@ namespace Registrar.Models
       return newCourse;
     }
 
-    public void AddStudent(Student newStudent)
+    public static void Update(int id, string newName, string newNumber)
     {
       MySqlConnection conn = DB.Connection();
       conn.Open();
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"INSERT INTO students_courses (course_id, student_id) VALUES (@courseId, @studentId);";
-
-      cmd.Parameters.Add(new MySqlParameter("@courseId", Id));
-      cmd.Parameters.Add(new MySqlParameter("@studentId", newStudent.Id));
-
+      cmd.CommandText = @"UPDATE courses SET name = @NewName, number = @NewNumber WHERE id = @Id;";
+      cmd.Parameters.Add(new MySqlParameter("@NewName", newName));
+      cmd.Parameters.Add(new MySqlParameter("@NewNumber", newNumber));
+      cmd.Parameters.Add(new MySqlParameter("@Id", id));
       cmd.ExecuteNonQuery();
       conn.Close();
-      if (conn != null)
+      if(conn != null)
       {
         conn.Dispose();
       }
     }
-
+    // RemoveStudent
     public List<Student> GetStudents()
     {
       MySqlConnection conn = DB.Connection();
@@ -171,39 +152,6 @@ namespace Registrar.Models
         conn.Dispose();
       }
       return allStudentsInCourse;
-    }
-
-    public static void ClearAll()
-    {
-      MySqlConnection conn = DB.Connection();
-      conn.Open();
-
-      var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"DELETE FROM students_courses; DELETE FROM courses;";
-      cmd.ExecuteNonQuery();
-
-      conn.Close();
-      if (conn != null)
-      {
-        conn.Dispose();
-      }
-    }
-
-    public static void Remove(int id)
-    {
-      MySqlConnection conn = DB.Connection();
-      conn.Open();
-
-      var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"DELETE FROM students_courses WHERE course_id = @CourseId; DELETE FROM courses WHERE id = @CourseId;";
-      cmd.Parameters.Add(new MySqlParameter("@CourseId", id));
-      cmd.ExecuteNonQuery();
-
-      conn.Close();
-      if (conn != null)
-      {
-        conn.Dispose();
-      }
     }
   }
 }
